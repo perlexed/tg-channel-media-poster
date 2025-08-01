@@ -1,6 +1,8 @@
 import os
 from typing import Optional, Tuple
 
+FOLDER_CLOSE_SYMBOL = '_'
+
 class FolderUtils:
     @staticmethod
     def find_last_closed_day(target_root_folder: str) -> Optional[Tuple[str, str, str]]:
@@ -17,7 +19,7 @@ class FolderUtils:
                 month_path = os.path.join(year_path, month)
                 days = sorted([d for d in os.listdir(month_path) if os.path.isdir(os.path.join(month_path, d))])
                 for day in days:
-                    if day.startswith('_'):
+                    if day.endswith(FOLDER_CLOSE_SYMBOL):
                         last = (year, month, day)
         return last
 
@@ -34,11 +36,11 @@ class FolderUtils:
     @staticmethod
     def mark_day_folder_closed(day_folder_path: str):
         """
-        Mark the day as closed by renaming the folder to start with '_'.
+        Mark the day as closed by renaming the folder to end with FOLDER_CLOSE_SYMBOL.
         """
         base = os.path.basename(day_folder_path)
-        if not base.startswith('_'):
-            new_base = '_' + base
+        if not base.endswith(FOLDER_CLOSE_SYMBOL):
+            new_base = base + FOLDER_CLOSE_SYMBOL
             new_path = os.path.join(os.path.dirname(day_folder_path), new_base)
             os.rename(day_folder_path, new_path)
             return new_path
