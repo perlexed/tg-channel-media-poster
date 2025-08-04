@@ -1,10 +1,7 @@
 import logging
-from types import coroutine
 from telethon import TelegramClient
-from telethon.errors import SessionPasswordNeededError
 from datetime import datetime, timezone, timedelta
-from typing import List, Optional
-import getpass
+from typing import List
 
 class TelegramPoster:
     def __init__(self, api_id: str, api_hash: str, phone: str):
@@ -17,13 +14,9 @@ class TelegramPoster:
     async def connect(self):
         """Connect to Telegram and authenticate"""
         self.client = TelegramClient('session_name', self.api_id, self.api_hash)
-        
-        # Define password callback that prompts user
-        def password_callback():
-            return getpass.getpass("Enter your 2FA password: ")
-        
-        coroutine = self.client.start(phone=self.phone)
-        await coroutine
+
+        tg_start_coroutine = self.client.start(phone=self.phone)
+        await tg_start_coroutine
         logging.info("Connected to Telegram as user")
 
     async def disconnect(self):
