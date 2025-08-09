@@ -1,5 +1,7 @@
+import asyncio
 import logging
 import os
+import random
 from typing import List
 
 from fs.file_utils import FileUtils
@@ -29,6 +31,11 @@ class Poster(object):
             telegram_connected = True
             for (date, folder), batch in images_batch:
                 await self.process_day(date, folder, batch)
+
+                delay = random.uniform(4, 8)
+                print(f"Waiting {delay:.2f} seconds before next post...")
+                await asyncio.sleep(delay)
+
         finally:
             if telegram_connected:
                 await self.tg_poster.disconnect()
