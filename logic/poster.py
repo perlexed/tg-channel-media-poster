@@ -29,8 +29,14 @@ class Poster(object):
         try:
             await self.tg_poster.connect()
             telegram_connected = True
+
+            should_delay_posts = len(images_batch) > 1
+
             for (date, folder), batch in images_batch:
                 await self.process_day(date, folder, batch)
+
+                if not should_delay_posts:
+                    continue
 
                 delay = random.uniform(4, 8)
                 print(f"Waiting {delay:.2f} seconds before next post...")
